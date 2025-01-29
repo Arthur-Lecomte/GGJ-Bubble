@@ -2,12 +2,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LevelSelectionMenu : MonoBehaviour {
+    public static LevelSelectionMenu Instance { get; private set; }
+    
     [SerializeField] private GameData gameData;
 
     private void Awake() {
-        StartScreen[] scripts = GetComponents<StartScreen>();
-        for (int i = 1; i < scripts.Length; i++) {
-            Destroy(scripts[i]);
+        if (Instance != null && Instance != this) {
+            Destroy(Instance.gameObject);
+            Instance = this;
+        } else {
+            Instance = this;
         }
         DontDestroyOnLoad(gameObject);
     }
