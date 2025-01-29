@@ -22,6 +22,7 @@ public class LevelManager : MonoBehaviour {
 
     [SerializeField] private GameObject PlayButton;
     [SerializeField] private GameObject StopButton;
+    [SerializeField] private Button menuButton;
     public GameObject menuBarDown;
     public GameObject bubbleSelectorPrefab;
     [SerializeField] private GameObject[] StarsJaune;
@@ -51,6 +52,7 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void Start() {
+        menuButton.interactable = false;
         indexLevel = GameData.levelToLoad;
         SceneDataManager.Instance.Load(indexLevel);
         LoadLevelData();
@@ -126,6 +128,7 @@ public class LevelManager : MonoBehaviour {
             }
         } else {
             canPlay = true;
+            menuButton.interactable = true;
         }
     }
 

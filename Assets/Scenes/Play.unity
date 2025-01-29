@@ -6023,6 +6023,7 @@ MonoBehaviour:
   CanvasWin: {fileID: 4489355}
   PlayButton: {fileID: 360570515}
   StopButton: {fileID: 1938352455}
+  menuButton: {fileID: 1563520589}
   menuBarDown: {fileID: 1904450828}
   bubbleSelectorPrefab: {fileID: 1524808897003564403, guid: 9f56b58f9083f3f4399c76f4f364f423, type: 3}
   StarsJaune:

@@ -49,6 +49,7 @@ public class Menu : MonoBehaviour {
     }
 
     public void QuitLevel() {
+        Time.timeScale = 1;
         SceneManager.LoadScene("MenuLvL");
     }
 }

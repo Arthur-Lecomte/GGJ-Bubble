@@ -14,8 +14,4 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
     }
-
-    public void StartLevelFromIndex() {
-        throw new NotImplementedException();
-    }
 }
