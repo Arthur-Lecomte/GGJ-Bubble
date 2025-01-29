@@ -1,36 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class StartScreen : MonoBehaviour {
-
-    [SerializeField] private GameData GameData;
-
-    private void Awake() {
-        if(gameObject.name == "GameLvl") {
-            DontDestroyOnLoad(gameObject);
-        }
-    }
-
+    public GameObject settingsPanel;
+    public Slider slider;
+    
     public void ChangeScene() {
         SceneManager.LoadScene("MenuLvL");
     }
 
-    public void Settings() {
-
+    public void Settings(bool value) {
+        slider.value = PlayerPrefs.GetFloat("MusicVolume");
+        settingsPanel.SetActive(value);
+    }
+    
+    public void SetVolume(float volume) {
+        Music.Instance.SetVolume(volume);
     }
 
     public void Exit() {
         Application.Quit();
-    }
-
-    public void ChangeMenu() {
-        SceneManager.LoadScene("StartScreen");
-    }
-
-    public void GoLvl(int value) {
-        GameData.levelToLoad = value;
-        SceneManager.LoadScene("SampleScene");
     }
 }

@@ -30,15 +30,17 @@ public class BullesMainMenu : MonoBehaviour
         rb.AddForce(Physics.gravity * gravityScale, ForceMode.Acceleration);
 
         // Assurer une vitesse minimale pour éviter l'arrêt complet
-        if (rb.velocity.magnitude < minSpeed)
+        if (!rb.isKinematic)
         {
-            rb.velocity = rb.velocity.normalized * minSpeed;
+            if(rb.velocity.magnitude < minSpeed) {
+                rb.velocity = rb.velocity.normalized * minSpeed;
+            }
         }
 
         // Gonfler la bulle si le bouton droit de la souris est maintenu enfoncé
         if (isInflating)
         {
-            transform.localScale += Vector3.one * inflateRate * Time.deltaTime;
+            transform.localScale += Vector3.one * (inflateRate * Time.deltaTime);
         }
     }
 
@@ -48,10 +50,12 @@ public class BullesMainMenu : MonoBehaviour
         Vector3 velocity = rb.velocity;
         Vector3 normal = collision.contacts[0].normal;
         Vector3 reflectedVelocity = Vector3.Reflect(velocity, normal);
-        rb.velocity = reflectedVelocity.normalized * velocity.magnitude;
+        if(!rb.isKinematic) {
+            rb.velocity = reflectedVelocity.normalized * velocity.magnitude;
 
-        // Ajouter une petite force aléatoire pour éviter l'arrêt complet
-        rb.AddForce(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0) * 0.1f, ForceMode.Impulse);
+            // Ajouter une petite force aléatoire pour éviter l'arrêt complet
+            rb.AddForce(new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0) * 0.1f, ForceMode.Impulse);
+        }
     }
 
     void OnMouseDown()

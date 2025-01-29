@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Menu : MonoBehaviour {
@@ -10,9 +9,7 @@ public class Menu : MonoBehaviour {
     public CanvasGroup gameCanvas;
     public GameObject menuPanel;
     public GameObject settingsPanel;
-    
-    public AudioSource musicSource;
-    public Slider volumeSlider;
+    public Slider slider;
     
     void Awake() {
         if (Instance != null && Instance != this) {
@@ -37,6 +34,7 @@ public class Menu : MonoBehaviour {
     }
     
     public void OpenSettings() {
+        slider.value = PlayerPrefs.GetFloat("MusicVolume");
         settingsPanel.SetActive(true);
         menuPanel.SetActive(false);
     }
@@ -47,8 +45,7 @@ public class Menu : MonoBehaviour {
     }
     
     public void SetVolume(float volume) {
-        musicSource.volume = volume;
-        PlayerPrefs.SetFloat("MusicVolume", volume);
+        Music.Instance.SetVolume(volume);
     }
 
     public void QuitLevel() {
