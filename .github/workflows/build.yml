@@ -1,0 +1,40 @@
+name: Build Unity Windows
+
+on:
+  push:
+    branches:
+      - main  # Le build s'exécute uniquement lors d'un push sur main
+  workflow_dispatch:  # Permet de déclencher le build manuellement depuis GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Utilisation d'un runner Ubuntu pour le build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # Récupère le code source
+
+      - name: Cache Library Folder
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            Library-${{ runner.os }}-
+
+      - name: Set up Unity
+        uses: game-ci/unity-builder@v2
+        with:
+          unityVersion: 2022.3.9f1  # Remplace par la version exacte de Unity
+          targetPlatform: StandaloneWindows64  # Build Windows 64 bits
+
+      - name: Build Windows
+        uses: game-ci/unity-builder@v2
+        with:
+          targetPlatform: StandaloneWindows64
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows-Build
+          path: build/StandaloneWindows64/
