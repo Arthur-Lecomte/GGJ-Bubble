@@ -3,12 +3,12 @@ name: Build Unity Windows
 on:
   push:
     branches:
-      - main  # Le build se lance seulement sur main
-  workflow_dispatch:  # Permet de lancer manuellement
+      - main  # Exécuter le build seulement sur main
+  workflow_dispatch:  # Permet de lancer manuellement le build depuis GitHub
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Utilisation d'Ubuntu comme environnement
+    runs-on: ubuntu-latest  # Utilisation d'un runner Ubuntu
 
     steps:
       - name: Checkout repository
@@ -25,13 +25,18 @@ jobs:
       - name: Set up Unity
         uses: game-ci/unity-builder@v2
         with:
-          unityVersion: 2022.3.9f1  # Mets ta version exacte
-          targetPlatform: StandaloneWindows64  # Build pour Windows 64 bits
+          unityVersion: 2022.3.9f1  # Remplace par ta version exacte
+          targetPlatform: StandaloneWindows64  # Build Windows 64 bits
+          unityEmail: ${{ secrets.UNITY_EMAIL }}  # Email du compte Unity
+          unityPassword: ${{ secrets.UNITY_PASSWORD }}  # Mot de passe Unity
+          unityLicense: ${{ secrets.UNITY_LICENSE }}  # Licence Unity fournie en secret
 
       - name: Build Windows
         uses: game-ci/unity-builder@v2
         with:
           targetPlatform: StandaloneWindows64
+          unityVersion: 2022.3.9f1
+          unityLicense: ${{ secrets.UNITY_LICENSE }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
