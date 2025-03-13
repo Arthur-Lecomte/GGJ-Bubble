@@ -1,18 +1,23 @@
-name: Build Unity Windows
+name: Build Unity Project
 
 on:
   push:
-    branches:
-      - main  # Exécuter le build seulement sur main
-  workflow_dispatch:  # Permet de lancer manuellement le build depuis GitHub
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Utilisation d'un runner Ubuntu
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneWindows64
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3  # Récupère le code source
+        uses: actions/checkout@v3
 
       - name: Cache Library Folder
         uses: actions/cache@v3
@@ -22,24 +27,26 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
-      - name: Set up Unity
-        uses: game-ci/unity-builder@v2
+      - name: Setup Unity
+        uses: game-ci/unity-setup@v2
         with:
-          unityVersion: 2022.3.9f1  # Remplace par ta version exacte
-          targetPlatform: StandaloneWindows64  # Build Windows 64 bits
-          unityEmail: ${{ secrets.UNITY_EMAIL }}  # Email du compte Unity
-          unityPassword: ${{ secrets.UNITY_PASSWORD }}  # Mot de passe Unity
-          unityLicense: ${{ secrets.UNITY_LICENSE }}  # Licence Unity fournie en secret
-
-      - name: Build Windows
-        uses: game-ci/unity-builder@v2
-        with:
-          targetPlatform: StandaloneWindows64
           unityVersion: 2022.3.9f1
-          unityLicense: ${{ secrets.UNITY_LICENSE }}
 
-      - name: Upload build artifact
+      - name: Activate Unity License
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          echo "$UNITY_LICENSE" | tr -d '\r' > UnityLicenseFile.ulf
+          unity-editor -batchmode -nographics -quit -manualLicenseFile UnityLicenseFile.ulf
+
+      - name: Build project
+        uses: game-ci/unity-builder@v2
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
+          unityVersion: 2022.3.9f1
+
+      - name: Upload Build
         uses: actions/upload-artifact@v4
         with:
-          name: Windows-Build
-          path: build/StandaloneWindows64/
+          name: Build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
